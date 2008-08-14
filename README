@@ -1,0 +1,84 @@
+sfTitleMaker plugin
+===================
+
+The `sfTitleMakerPlugin` allows you to create modular/hierachical content to be passed to the html `title` tag.
+
+Examples:
+
+ 1. My Website » News » Hungry man eats horse
+ 2. Royal Blue Egg Cup | Ceramics | Products | My Online Store
+
+Usage
+-----
+Currently you create an sfTitleMaker object in the `preExecute()` method and then set `title` tag in the `postExecute()` method.
+
+(If anyone can offer advice on how to do it with filter's please feel free to contact tom at templestreetmedia dot com)
+
+### Example 1
+
+In apps/myapp/config/app.yml:
+
+    all:
+      sfTitleMaker:
+        html_title_stem:       My Website
+        # Use default separator and order
+
+In apps/myapp/modules/news/actions/actions.class.php:
+
+    class newsActions extends sfActions
+    {
+      public function preExecute()
+      {
+        $this->htmlTitle = new sfTitleMaker();
+        $this->htmlTitle->add('News');
+      }
+
+      public function postExecute()
+      {
+        $this->getResponse()->setTitle($this->htmlTitle->__toString());
+      }
+
+      public function executeShow()
+      {
+        $newsItem = NewsPeer::retrieveByPk(1);
+
+        $this->htmlTitle->add($newsItem->getHeadline());
+      }
+    }
+
+
+### Example  2 
+
+In apps/myapp/config/app.yml:
+
+    all:
+      sfTitleMaker:
+        html_title_stem:       My Online Store
+        html_title_direction:  backward
+        html_title_separator:  ' | '
+
+In apps/myapp/modules/products/actions/actions.class.php:
+
+    class newsActions extends sfActions
+    {
+      public function preExecute()
+      {
+        $this->htmlTitle = new sfTitleMaker('Products');
+      }
+
+      public function postExecute()
+      {
+        $this->getResponse()->setTitle($this->htmlTitle->__toString());
+      }
+
+      public function executeShow()
+      {
+        $product = ProductPeer::retrieveByPk(1);
+
+        $this->htmlTitle->add($product->getCategory());
+        $this->htmlTitle->add($product->getTitle());
+      }
+    }
+
+
+

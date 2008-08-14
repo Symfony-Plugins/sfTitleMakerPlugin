@@ -1,0 +1,6 @@
+To do list
+=========
+
+* Sort out licence
+* Sort out PEAR paxkage xml file
+* Use a filter to avoid having to use preExecute and postExecute
