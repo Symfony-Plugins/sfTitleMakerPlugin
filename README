@@ -10,9 +10,21 @@ Examples:
 
 Usage
 -----
+
+Update the execution filter class in `myapp/config/filters.yml`:
+
+    execution:
+      class: sfTitleMakerExecutionFilter
+
+Clear your cache:
+
+    ./symfony cc
+
+Add some titles as in the examples
+
 ### Example 1
 
-    'My Website » News » Hungry man eats horse'
+    My Website » News » Hungry man eats horse
 
 In apps/myapp/config/app.yml:
 
@@ -29,12 +41,15 @@ In apps/myapp/modules/news/actions/actions.class.php:
       {
         $newsItem = NewsPeer::retrieveByPk(1);
 
+        sfTitleMaker::getInstance()->add('News');
         sfTitleMaker::getInstance()->add($newsItem->getHeadline());
       }
     }
 
 
 ### Example  2
+
+    Royal Blue Egg Cup | Ceramics | Products | My Online Store
 
 In apps/myapp/config/app.yml:
 
@@ -48,6 +63,11 @@ In apps/myapp/modules/products/actions/actions.class.php:
 
     class newsActions extends sfActions
     {
+      public function preExecute()
+      {
+        sfTitleMaker::getInstance()->add('Products');
+      }
+
       public function executeShow()
       {
         $product = ProductPeer::retrieveByPk(1);
@@ -56,6 +76,3 @@ In apps/myapp/modules/products/actions/actions.class.php:
         sfTitleMaker::getInstance()->add($product->getTitle());
       }
     }
-
-
-
