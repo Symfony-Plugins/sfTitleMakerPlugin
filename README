@@ -10,7 +10,6 @@ Examples:
 
 Usage
 -----
-
 Update the execution filter class in `myapp/config/filters.yml`:
 
     execution:
