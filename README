@@ -10,11 +10,9 @@ Examples:
 
 Usage
 -----
-Currently you create an sfTitleMaker object in the `preExecute()` method and then set `title` tag in the `postExecute()` method.
-
-(If anyone can offer advice on how to do it with filter's please feel free to contact tom at templestreetmedia dot com)
-
 ### Example 1
+
+    'My Website » News » Hungry man eats horse'
 
 In apps/myapp/config/app.yml:
 
@@ -27,27 +25,16 @@ In apps/myapp/modules/news/actions/actions.class.php:
 
     class newsActions extends sfActions
     {
-      public function preExecute()
-      {
-        $this->htmlTitle = new sfTitleMaker();
-        $this->htmlTitle->add('News');
-      }
-
-      public function postExecute()
-      {
-        $this->getResponse()->setTitle($this->htmlTitle->__toString());
-      }
-
       public function executeShow()
       {
         $newsItem = NewsPeer::retrieveByPk(1);
 
-        $this->htmlTitle->add($newsItem->getHeadline());
+        sfTitleMaker::getInstance()->add($newsItem->getHeadline());
       }
     }
 
 
-### Example  2 
+### Example  2
 
 In apps/myapp/config/app.yml:
 
@@ -61,22 +48,12 @@ In apps/myapp/modules/products/actions/actions.class.php:
 
     class newsActions extends sfActions
     {
-      public function preExecute()
-      {
-        $this->htmlTitle = new sfTitleMaker('Products');
-      }
-
-      public function postExecute()
-      {
-        $this->getResponse()->setTitle($this->htmlTitle->__toString());
-      }
-
       public function executeShow()
       {
         $product = ProductPeer::retrieveByPk(1);
 
-        $this->htmlTitle->add($product->getCategory());
-        $this->htmlTitle->add($product->getTitle());
+        sfTitleMaker::getInstance()->add($product->getCategory());
+        sfTitleMaker::getInstance()->add($product->getTitle());
       }
     }
 

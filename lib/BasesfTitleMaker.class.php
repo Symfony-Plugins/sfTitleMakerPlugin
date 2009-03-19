@@ -3,13 +3,15 @@
 /**
  * Base TSM HTML Title Class
  *
- * Provides an easy to use way of managing HTML hierachical title 
+ * Provides an easy to use way of managing HTML hierachical title
  * segments separated by a delimiter, such as:
- * 
- *     My Website » My module  » My Action 
+ *
+ *     My Website » My module  » My Action
  *
  * @package         sfTitleMakerPlugin
- * @author          Tom Haskins-Vaughan <tom@templestreetmedia.com> 
+ * @author          Tom Haskins-Vaughan <tom@templestreetmedia.com>
+ *
+ * Thanks to naholyr for providing the filter integration.
  */
 class BasesfTitleMaker
 {
@@ -18,6 +20,20 @@ class BasesfTitleMaker
   protected $includeStem  = true;
   protected $separator    = ' » ';
   protected $direction    = 'forward';
+  protected static $instance = null;
+
+  /**
+    * @return sfTitleMaker
+    */
+  public static function getInstance()
+  {
+    if (is_null(self::$instance))
+    {
+      self::$instance = new sfTitleMaker();
+    }
+
+    return self::$instance;
+  }
 
   public function __construct($string = null, $paramSeparator = null, $paramDirection = null)
   {
@@ -28,7 +44,7 @@ class BasesfTitleMaker
     $this->stem      = sfConfig::get('app_sfTitleMaker_html_title_stem', '');
 
     $this->separator = $paramSeparator ? $paramSeparator : $this->separator;
-    
+
     $paramDirection ? $this->setDirection($paramDirection) : null;
   }
 
@@ -37,6 +53,10 @@ class BasesfTitleMaker
     return $this->getString();
   }
 
+  /*
+   * Sets the symbol used between each part of the title
+   * The default is ' » '
+   */
   public function setSeparator($v)
   {
     $this->separator = $v;
@@ -51,22 +71,22 @@ class BasesfTitleMaker
   {
     $this->includeStem = $v ? true : false;
   }
-  
+
   public function add($v)
   {
     $v ? $this->titleArray[] = $v : null;
   }
-  
+
   public function removeLast()
   {
     array_pop($this->titleArray);
   }
-  
+
   public function clear()
   {
     $this->titleArray = array();
   }
-  
+
   protected function getArray()
   {
     if ($this->includeStem AND $this->stem)
@@ -76,13 +96,13 @@ class BasesfTitleMaker
 
     return $this->titleArray;
   }
-  
+
   public function getString()
   {
     $array = $this->getArray();
     $array = $this->direction == 'backward' ? array_reverse($array) : $array;
 
-    $string = '';    
+    $string = '';
     for ($i=0; $i<count($array); $i++)
     {
       $string .= $i ? $this->separator : '';
